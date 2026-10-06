@@ -4,12 +4,12 @@
 
 **Related documents:**
 
-- SSO: [Pubky SSO design](https://github.com/BitcoinErrorLog/pubky-marketplace/blob/master/docs/sso/pubky-sso-design.md) and [SSO proposal for the team](https://github.com/BitcoinErrorLog/pubky-marketplace/blob/master/docs/sso/sso-proposal-for-team.md).
+- SSO: [Pubky SSO design](https://github.com/pubky/pubky-marketplace/blob/master/docs/sso/pubky-sso-design.md) and [SSO proposal for the team](https://github.com/pubky/pubky-marketplace/blob/master/docs/sso/sso-proposal-for-team.md).
 - Shop messaging context:
-  - [Shop team brief](https://github.com/BitcoinErrorLog/pubky-marketplace/blob/master/docs/launch/shop-team-brief.md);
-  - [Paykit team brief](https://github.com/BitcoinErrorLog/pubky-marketplace/blob/master/docs/spec-feedback/paykit-team-brief.md);
+  - [Shop team brief](https://github.com/pubky/pubky-marketplace/blob/master/docs/launch/shop-team-brief.md);
+  - [Paykit team brief](https://github.com/pubky/pubky-marketplace/blob/master/docs/spec-feedback/paykit-team-brief.md);
   - the Shop's [messaging research and implementation notes](https://github.com/BitcoinErrorLog/pubky-app/blob/release/shop-v0.6.8/docs/ecommerce/messaging/README.md).
-- Chat spec today: [pubky-chat `spec/`](https://github.com/BitcoinErrorLog/pubky-chat/tree/main/spec).
+- Chat spec today: [pubky-chat `spec/`](https://github.com/pubky/pubky-chat/tree/main/spec).
 
 Sizes follow the SSO plan:
 
@@ -38,7 +38,7 @@ Sizes follow the SSO plan:
   - current messaging is frozen and labeled **beta**, for buyer–seller and mutual-follow chats;
   - key pinning and at-rest encryption already shipped in v0.6.45;
   - the Shop team fixes the two P0s only: the receive cap defers instead of consuming, and sign-out keeps the already-encrypted history.
-- **Hub:** [BitcoinErrorLog/pubky-chat](https://github.com/BitcoinErrorLog/pubky-chat).
+- **Hub:** [pubky/pubky-chat](https://github.com/pubky/pubky-chat).
 
 ## 1. Prior work and decisions
 
@@ -50,7 +50,7 @@ Sizes follow the SSO plan:
 | [hypercolor](https://github.com/BitcoinErrorLog/hypercolor) `6713b2f` | React Native messenger on Encrypted Links | Android 1.1.0. [#7](https://github.com/BitcoinErrorLog/hypercolor/pull/7) (SDK-managed links) open |
 | [hypercolor-web](https://github.com/BitcoinErrorLog/hypercolor-web) `9534b79` | Web client, plus [ADRs 0001–0004](https://github.com/BitcoinErrorLog/hypercolor-web/tree/main/docs/adr) and the [graph review](https://github.com/BitcoinErrorLog/hypercolor-web/blob/main/docs/graph-utilisation-review.md) | ADRs are Proposed. [#7](https://github.com/BitcoinErrorLog/hypercolor-web/pull/7) (stock Ring auth) open |
 | hypercolor-web branch `feat/homeserver-migration-proof`, `docs/architecture-comparison.md` | Hypercolor compared with Signal and Keet | Branch only |
-| [pubky-chat](https://github.com/BitcoinErrorLog/pubky-chat) `fcdb094` | `kinds-v2` (21 `chat.*` kinds), capabilities, admission, store schema, vectors, CI | Spec only |
+| [pubky-chat](https://github.com/pubky/pubky-chat) `fcdb094` | `kinds-v2` (21 `chat.*` kinds), capabilities, admission, store schema, vectors, CI | Spec only |
 | pubky-chat package specification, rev2 (21 Sep 2026) | `@pubky/chat-*` packages and public API; program decisions D1–D9 | Passed independent review and security audit. Not published |
 | SDK-managed links migration design, rev2 (21–23 Sep) | Owner decisions 1–9 on Encrypted-Link recovery | Passed the security audit |
 | First-contact root-cause analysis (Sep 2026) | A stranger's first message is never seen | Not published |
@@ -67,7 +67,7 @@ Sizes follow the SSO plan:
 | # | Decision (source) | Verdict | Reason |
 |---|---|---|---|
 | P1 | One `chat.*` vocabulary; listings are `chat.context.v0`, offers `chat.proposal.*` (D2) | **Adopt** | Transport-independent; carried inside MLS |
-| P2 | Repo `BitcoinErrorLog/pubky-chat`, MIT (D1) | **Adopt** | §6 |
+| P2 | Repo `pubky/pubky-chat`, MIT (D1) | **Adopt** | §6 |
 | P3 | Package suite `chat-core`, `chat-store`, `chat-transport-paykit`, `chat-attachments`, `chat-payments`, `chat-react`, `chat-backup`, `native/` (package spec §1) | **Adopt**, plus `chat-transport-mls` and `chat-index-client` | The layering already isolates transport |
 | P4 | Never TypeScript crypto; web runs the Rust state machine through WASM | **Adopt** | MLS engine is Rust (OpenMLS), built for WASM and UniFFI |
 | P5 | Production primitives only: no Sealed Blob v2, UKD/AppCert, Molt, drop relay, legacy `pubky-noise` | **Adopt** | `att` is a claim in the official grant. The knock seal is HPKE (RFC 9180). The L2 bridge is author-owned files plus an index, not a relay that holds messages |
@@ -426,7 +426,7 @@ archive key (symmetric, per user, random; shared through the self group; wrapped
 
 ## 6. Hub
 
-**[BitcoinErrorLog/pubky-chat](https://github.com/BitcoinErrorLog/pubky-chat)** is the hub:
+**[pubky/pubky-chat](https://github.com/pubky/pubky-chat)** is the hub:
 
 - it holds the spec, vectors and CI;
 - it is public, MIT and BitcoinErrorLog-owned;
