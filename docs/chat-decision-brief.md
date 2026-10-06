@@ -1,6 +1,6 @@
 # Chat: decisions and next steps
 
-The full plan, with owners and phases, is the [chat unification plan](https://github.com/BitcoinErrorLog/pubky-chat/blob/main/docs/chat-unification-plan.md).
+The full plan, with owners and phases, is the [chat unification plan](https://github.com/pubky/pubky-chat/blob/main/docs/chat-unification-plan.md).
 
 ## What we decided
 
