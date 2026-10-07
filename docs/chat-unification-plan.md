@@ -21,7 +21,7 @@ Sizes follow the SSO plan:
 
 - **Crypto: MLS (RFC 9420)** for every private conversation, through OpenMLS. It sits behind the library's `ChatTransport` seam, and the `pubky-chat` kinds-v2 vocabulary is carried inside it. Paykit Encrypted Links remain Paykit's payment channel.
 - **Identity:** a chat device key counts only when the user's grant names it (the `att` claim).
-- **Recovery:** the user's pubky backup. The signer delivers scoped keys for `/priv/chat/v1/` (K6). The library derives wrapping keys from them for the random archive and inbox keys stored at stable paths there. A recovery code is the fallback.
+- **Recovery:** the user's pubky backup. The signer delivers scoped keys for `/priv/chat/v1/` (K6), requested as `/priv/chat/v1/:rwe`. The library derives wrapping keys from them for the random archive and inbox keys stored at stable paths there. A recovery code is the fallback.
 - **Discovery and scale use four layers that work together:**
 
   | Layer | What it does |
@@ -143,7 +143,7 @@ Sizes follow the SSO plan:
 ```
 pubky identity key (Ring / Bitkit / Passport; never in an app)
  ├─ grant (identity, or SSO agent under H1)
- │   cnf = app PoP key; caps include /pub/chat/v1/:rw and /priv/chat/v1/:rw
+ │   cnf = app PoP key; caps include /pub/chat/v1/:rw and /priv/chat/v1/:rwe
  │   att = [{ purpose: "pubky-chat/device/v1", key: <device Ed25519 key> }]   ← K5
  │    └─ device signature key = MLS credential (one per app installation)
  │        ├─ KeyPackages
@@ -167,7 +167,7 @@ archive key (symmetric, per user, random; shared through the self group; wrapped
   - **Delivery.** The signer sends the seed beside the grant, in the encrypted relay payload, never inside the grant the homeserver stores. A Passport agent (SSO H1) holds scoped seeds and derives child keys locally.
   - **File keys only.** The SDK keeps directory seeds inside its key bundle and derives keys for file paths only. W's path is a key name: nothing is stored there.
   - **Opt-in per sign-in.** The library requests keys with the SDK's V1 approval format. A signer that predates it returns a bare grant, which a V1 flow rejects. Those users sign in without keys and get the recovery-code fallback.
-  - **SDK draft status ([pubky-homeserver#668](https://github.com/pubky/pubky-homeserver/pull/668), 6 Oct).** It matches the properties above. Open before merge: the approval is encrypted only with the link secret, so anyone who sees the QR or link could keep the keys. The requested fix seals the keys to an app-held key. Not yet covered: an agent issuing key-bearing approvals to child apps (SSO H1).
+  - **SDK draft status ([pubky-homeserver#668](https://github.com/pubky/pubky-homeserver/pull/668), 6 Oct).** It matches the properties above. The link-secret fix is done (6 Oct: HPKE-sealed to an app-held `ek`). **Explicit `e` permission (7 Oct, [#668](https://github.com/pubky/pubky-homeserver/pull/668#issuecomment-6035403798)).** Keys are delivered only for scopes that carry the new `e` action. `r` and `w` no longer deliver keys, and `e` grants no storage access (`/pub/chat/:rwe` = storage plus keys, `/pub/chat/:e` = keys only). Signers may approve storage while declining `e`. Upgrade order: the homeserver first (older homeservers reject grants that carry `e`), then apps and signers together (older signers fail closed on `:rwe`, and approvals from the earlier draft are rejected on restore). Chat therefore requests `/priv/chat/v1/:rwe`; a user who declines `e` gets the recovery-code fallback. Deferred to a later `v2`: an agent issuing key-bearing approvals to child apps (SSO H1, Q12).
 - **What the library adds.** The SDK derives stable scoped keys only. It has no purpose labels and no data-key wrapping.
   - The chat library derives every purpose key from W with HKDF and its own versioned labels, as above. A new label version is a new key.
   - The archive key and inbox keys stay random. W only wraps them. Wrapping a random key, rather than encrypting with W directly, is what allows rotation.
