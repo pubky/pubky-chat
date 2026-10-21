@@ -19,12 +19,12 @@ Sizes follow the SSO plan:
 
 ## Answer
 
-**Update 8 Oct (Severin, team Slack, 10:23 UTC).**
+**Update 8 Oct (SeverinAlexB, team Slack, 10:23 UTC).**
 
-- **Inbox-server auth.** An app needs a way to authenticate to the inbox server with its grant session. Severin's first cut, [pubky-homeserver#673](https://github.com/pubky/pubky-homeserver/pull/673) (external-service authentication with replay storage), is closed and replaced by [#680](https://github.com/pubky/pubky-homeserver/pull/680): `create_custom_pop(data)` signs application JSON (audience, server challenge) with the grant's client key and returns the grant plus the proof as one bundle; `verify_custom_grant_pop` checks it offline, without the homeserver. **Merged 8 Oct 14:55 UTC** (`fd8a7363`, on `main`; not yet in a release, the latest tag is v0.15.0 from 7 Oct). This is the prerequisite for H8's authenticated writes and for the index/inbox services to know which pubky an app acts for.
-- **Inbox server (H8).** Not started; Severin hopes to start mid-week of 12 Oct.
-- **Chat frontend.** Matthew builds it in parallel; Severin and Matthew align on how on 8 Oct.
-- **Scoped keys (K6).** Andrei is delivering them in [#668](https://github.com/pubky/pubky-homeserver/pull/668); Severin asked him for an ETA. On 8 Oct Andrei and Severin [removed HPKE and the recipient key from #668](https://github.com/pubky/pubky-homeserver/pull/668#issuecomment-6057852544) to keep it reviewable, so it merges on the existing shared-secret relay flow and the link-holder fix follows separately (no link yet). The §3.2 note that the link-secret fix is done therefore no longer holds: until the follow-up lands, whoever holds the approval link can also read the key bundle, and D1's primary recovery path should wait for it.
+- **Inbox-server auth.** An app needs a way to authenticate to the inbox server with its grant session. SeverinAlexB's first cut, [pubky-homeserver#673](https://github.com/pubky/pubky-homeserver/pull/673) (external-service authentication with replay storage), is closed and replaced by [#680](https://github.com/pubky/pubky-homeserver/pull/680): `create_custom_pop(data)` signs application JSON (audience, server challenge) with the grant's client key and returns the grant plus the proof as one bundle; `verify_custom_grant_pop` checks it offline, without the homeserver. **Merged 8 Oct 14:55 UTC** (`fd8a7363`, on `main`; not yet in a release, the latest tag is v0.15.0 from 7 Oct). This is the prerequisite for H8's authenticated writes and for the index/inbox services to know which pubky an app acts for.
+- **Inbox server (H8).** Not started; a start is planned for mid-week of 12 Oct.
+- **Chat frontend.** secondl1ght builds it in parallel; SeverinAlexB and secondl1ght align on how on 8 Oct.
+- **Scoped keys (K6).** andrei-21 is delivering them in [#668](https://github.com/pubky/pubky-homeserver/pull/668); an ETA was requested. On 8 Oct andrei-21 and SeverinAlexB [removed HPKE and the recipient key from #668](https://github.com/pubky/pubky-homeserver/pull/668#issuecomment-6057852544) to keep it reviewable, so it merges on the existing shared-secret relay flow and the link-holder fix follows separately (no link yet). The §3.2 note that the link-secret fix is done therefore no longer holds: until the follow-up lands, whoever holds the approval link can also read the key bundle, and D1's primary recovery path should wait for it.
 
 - **Crypto: MLS (RFC 9420)** for every private conversation, through OpenMLS. It sits behind the library's `ChatTransport` seam, and the `pubky-chat` kinds-v2 vocabulary is carried inside it. Paykit Encrypted Links remain Paykit's payment channel.
 - **Identity:** a chat device key counts only when the user's grant names it (the `att` claim).
@@ -40,7 +40,7 @@ Sizes follow the SSO plan:
 
   The index is an optimisation, never a dependency.
 - **No OSS messaging stack** (Matrix, XMTP, Nostr NIP-17). We reuse OpenMLS and their proven patterns (§3.9).
-- **Severin's audit** found 12 root causes in the Shop's messaging. Each maps to the design element or phase item that removes it (§2). His four programs, his message lifecycle (accepted → queued → transmitted → acknowledged) and his product definitions are adopted. All six of his open decisions are settled (§3.7).
+- **SeverinAlexB's audit** found 12 root causes in the Shop's messaging. Each maps to the design element or phase item that removes it (§2). Its four programs, message lifecycle (accepted → queued → transmitted → acknowledged) and product definitions are adopted. All six of its open decisions are settled (§3.7).
 - **The Shop now (Phase 0):**
   - current messaging is frozen and labeled **beta**, for buyer–seller and mutual-follow chats;
   - key pinning and at-rest encryption already shipped in v0.6.45;
@@ -62,10 +62,10 @@ Sizes follow the SSO plan:
 | SDK-managed links migration design, rev2 (21–23 Sep) | Owner decisions 1–9 on Encrypted-Link recovery | Passed the security audit |
 | First-contact root-cause analysis (Sep 2026) | A stranger's first message is never seen | Not published |
 | [pubky-app-specs#142](https://github.com/pubky/pubky-app-specs/pull/142) | Social specs v1: app-neutral `{pub,priv}/social/v1/` paths and an owner-only `/priv/` tier | Open RFC |
-| **Severin's audit (2 Oct 2026)** | Read-only source audit of the Shop's messaging: 77 findings in 12 root causes. Estimates 60%+ of the messaging code needs rewriting. Unknown senders are undiscoverable, and sync takes 30+ minutes for accounts with many follows | Shared in team Slack |
+| **SeverinAlexB's audit (2 Oct 2026)** | Read-only source audit of the Shop's messaging: 77 findings in 12 root causes. Estimates 60%+ of the messaging code needs rewriting. Unknown senders are undiscoverable, and sync takes 30+ minutes for accounts with many follows | Shared in team Slack |
 | **Orlando's question (2 Oct 2026)** | Should we adopt an existing p2p messaging library now and replace it later? | §3.9 |
-| **Andrei's scoped keys (2 Oct 2026)** | Pubky SDK derivation of stable keys scoped to grant paths (with Sev), delivered beside the grant | SDK draft in [pubky-homeserver#668](https://github.com/pubky/pubky-homeserver/pull/668) (6 Oct). §3.2, K6 |
-| **Ben's Paykit answers (2 Oct 2026)** | Shared Paykit state per identity is by design; no WASM package, storage interface or custom-message API; signed Noise-key proof in [paykit-rs#169](https://github.com/pubky/paykit-rs/pull/169) | §4, §5 |
+| **andrei-21's scoped keys (2 Oct 2026)** | Pubky SDK derivation of stable keys scoped to grant paths (with SeverinAlexB), delivered beside the grant | SDK draft in [pubky-homeserver#668](https://github.com/pubky/pubky-homeserver/pull/668) (6 Oct). §3.2, K6 |
+| **ben-kaufman's Paykit answers (2 Oct 2026)** | Shared Paykit state per identity is by design; no WASM package, storage interface or custom-message API; signed Noise-key proof in [paykit-rs#169](https://github.com/pubky/paykit-rs/pull/169) | §4, §5 |
 
 ### 1.2 Decisions already made, and what this plan does with them
 
@@ -82,7 +82,7 @@ Sizes follow the SSO plan:
 | P7 | One receiver per app plus multi-receiver discovery (D3) | **Supersede** | Every app installation is an MLS device in the same group |
 | P8 | Admission policies `hypercolor-wot`, `shop`, `open`; follows never auto-accept (D5) | **Adopt** | Admission decides Inbox versus Requests (§3.7) |
 | P9 | Request rows render only the pubky, the arrival time and local facts; profiles resolve only when the row is opened (ADR 0004 §7) | **Adopt** | |
-| P10 | Outbound status `Queued` / `Sent` / `Failed`; no "delivered" or "read" until a receipt protocol ships (UX contract §B.3) | **Adapt** | Severin's lifecycle is the receipt protocol. `Delivered` and `Read` render once acknowledgements ship in Phase 2 (§3.7) |
+| P10 | Outbound status `Queued` / `Sent` / `Failed`; no "delivered" or "read" until a receipt protocol ships (UX contract §B.3) | **Adapt** | SeverinAlexB's lifecycle is the receipt protocol. `Delivered` and `Read` render once acknowledgements ship in Phase 2 (§3.7) |
 | P11 | Foreground drain; an opt-in, content-free push waker later (D7) | **Adopt** | Phase 4 |
 | P12 | Random 32-byte recovery code, shown once (D6) | **Adapt** | The primary recovery path is the user's pubky backup: the signer-derived subtree seed for `/priv/chat/v1/` wraps the archive key and the inbox key (§3.2). The recovery code stays as an optional fallback until Ring, Bitkit and Passport all deliver scoped keys (K6) |
 | P13 | Content-addressed attachments: `blob_id`, AAD = `blob_id`, re-seed (ADR 0001 §4) | **Adopt** | |
@@ -96,11 +96,11 @@ Sizes follow the SSO plan:
 | P21 | Stock Ring `pubkyauth` (hypercolor#4, hypercolor-web#7) | **Adopt** | |
 | P22 | Deferred: Double Ratchet, groups over 50 (dossier) | **Supersede** | MLS covers both |
 | P23 | App-neutral bare-word paths; owner-only `/priv/`; mutes at `/priv/social/v1/mutes/` (social specs v1) | **Adopt** | Hence `/pub/chat/v1/`. Chat honors social-specs mutes |
-| P24 | Severin's four programs, lifecycle and product definitions | **Adopt** | §2, §3.7, §5 |
+| P24 | SeverinAlexB's four programs, lifecycle and product definitions | **Adopt** | §2, §3.7, §5 |
 
-**John's direction, 16 Sep:** "should we have a different thing than paykit for dedicated chat needs?" Yes: a chat transport built for chat, with Paykit kept for payments.
+**Direction, 16 Sep:** "should we have a different thing than paykit for dedicated chat needs?" Yes: a chat transport built for chat, with Paykit kept for payments.
 
-## 2. Severin's audit: every root cause removed
+## 2. SeverinAlexB's audit: every root cause removed
 
 | # | Root cause | Removed by | Phase item |
 |---|---|---|---|
@@ -117,7 +117,7 @@ Sizes follow the SSO plan:
 | 11 | Read, unread, mute, block and request are defined inconsistently | One definition each (§3.7), in spec v3 and enforced by vectors | C1 |
 | 12 | The product surface is incomplete | Kinds-v2 already specifies edit, delete, receipts, attachments, groups, pins and mentions. Bodies go to 16 KiB. `chat-store` adds pagination, timestamps and local search | C2, E1, U1 |
 
-**Severin's four programs, mapped to phases:**
+**SeverinAlexB's four programs, mapped to phases:**
 
 | Program | Causes | Phase |
 |---|---|---|
@@ -284,7 +284,7 @@ archive key (symmetric, per user, random; shared through the self group; wrapped
 
 ### 3.7 Message lifecycle and product definitions
 
-**Lifecycle (Severin):**
+**Lifecycle (SeverinAlexB):**
 
 | State | Meaning | UI |
 |---|---|---|
@@ -373,8 +373,8 @@ archive key (symmetric, per user, random; shared through the self group; wrapped
   - Sign-out and account switches lock the owner-scoped history and outbox and never delete them.
   - The at-rest key is owner-bound and survives sign-out.
   - Signing back in as the same pubky reopens it.
-- **Dropped: Paykit scope narrowing.** Paykit state is shared per identity by design (Ben, 2 Oct), so a narrower folder scope can't isolate one app's messaging. The exposure ends when the Shop drops `/pub/paykit/:rw` after F5.
-- **Parked: the handshake static-key check** on the frozen stack. Upstream, Ben's signed Noise-key proof ([pubky/paykit-rs#169](https://github.com/pubky/paykit-rs/pull/169)) closes the App Registry key swap. The handshake gap we raised on it is closed too: Ben's commits `4eda7102` and `73345917` check the peer's static key against the signed key before any transport use, on handshake completion and on restore. A mismatch fails into recovery-required, and substitution tests cover both roles and restored links. The frozen Shop stack doesn't get this check; it ends at E1/F5.
+- **Dropped: Paykit scope narrowing.** Paykit state is shared per identity by design (ben-kaufman, 2 Oct), so a narrower folder scope can't isolate one app's messaging. The exposure ends when the Shop drops `/pub/paykit/:rw` after F5.
+- **Parked: the handshake static-key check** on the frozen stack. Upstream, ben-kaufman's signed Noise-key proof ([pubky/paykit-rs#169](https://github.com/pubky/paykit-rs/pull/169)) closes the App Registry key swap. The handshake gap we raised on it is closed too: ben-kaufman's commits `4eda7102` and `73345917` check the peer's static key against the signed key before any transport use, on handshake completion and on restore. A mismatch fails into recovery-required, and substitution tests cover both roles and restored links. The frozen Shop stack doesn't get this check; it ends at E1/F5.
 - **Cookie sessions until E1.** SSO item F2 is replaced by E1. Shop messaging stays on Ring cookie sessions until the MLS cutover, and E1 is what brings messaging to Passport and Bitkit users. Cookie removal (SSO H4) waits for E1.
 
 **Migration (E1):**
@@ -394,7 +394,7 @@ archive key (symmetric, per user, random; shared through the self group; wrapped
 | P0-2 | Sign-out keeps the already-encrypted history | Shop team | S | 0 |
 | P0-3 | Beta label and conversation scope | Shop team | S | 0 |
 | C1 | Spec v3: MLS profile, L1 layout, knock format, index protocol and rules, lifecycle, product definitions, public rooms v1, vectors | us, with Matt and Paykit | L | 1 |
-| C2 | TypeScript packages with lifecycle, lease, reactive store, durable cursors and drafts (Severin's state-consistency program) | us | L | 1 |
+| C2 | TypeScript packages with lifecycle, lease, reactive store, durable cursors and drafts (SeverinAlexB's state-consistency program) | us | L | 1 |
 | C3 | `pubky-chat-mls` and `chat-transport-mls` | us | L | 1–2 |
 | X1 | Independent protocol review and security audit of C1, C3, B1 and I1, plus the key wrapping, HKDF labels and recovery path of D1 | us | — | 2 |
 | B1 | L2 bridge: sender-side blinded knocks, gate (`pow`, `contacts-only`, `postage`), Requests | us | M | 2 |
@@ -413,12 +413,12 @@ archive key (symmetric, per user, random; shared through the self group; wrapped
 
 | # | Ask | Owner | Phase |
 |---|---|---|---|
-| H8 | Homeserver append-only inbox: create-only writes by any authenticated pubky, per-writer rate limits, a per-prefix quota, the policy from `inbox.json` enforced on write, owner list and delete. **Update 8 Oct:** writer auth is [#680](https://github.com/pubky/pubky-homeserver/pull/680) (grant-backed custom PoP, **merged 8 Oct**); the inbox server itself is not started, hoped for mid-week of 12 Oct (Severin) | Pubky core (Severin) | 3 |
+| H8 | Homeserver append-only inbox: create-only writes by any authenticated pubky, per-writer rate limits, a per-prefix quota, the policy from `inbox.json` enforced on write, owner list and delete. **Update 8 Oct:** writer auth is [#680](https://github.com/pubky/pubky-homeserver/pull/680) (grant-backed custom PoP, **merged 8 Oct**); the inbox server itself is not started, hoped for mid-week of 12 Oct (SeverinAlexB) | Pubky core (SeverinAlexB) | 3 |
 | H9 | Event stream for indexers: a resumable homeserver change feed filtered by path prefix, with no per-connection user cap | Pubky core | 2 |
 | N1 | Index hosting: a second public `pubky-chat-index` instance alongside Nexus. The software is I1 | Pubky core (hosting), us (software) | 2 |
 | N2 | Nexus never indexes `/pub/chat/` | Pubky core | 1 |
 | K5 | Grant `att` claim, carried through child grants | Pubky core | 1 |
-| K6 | Scoped key derivation in the SDK (Rust, JS, FFI), delivered beside the grant in the encrypted relay payload, with signer support in Ring, Bitkit and Passport. The SDK side is in draft ([pubky-homeserver#668](https://github.com/pubky/pubky-homeserver/pull/668), Andrei). It gates D1's primary recovery path; until a signer supports it, its users get the recovery-code fallback | Pubky core (Andrei), Ring, Bitkit, Passport | 3 |
+| K6 | Scoped key derivation in the SDK (Rust, JS, FFI), delivered beside the grant in the encrypted relay payload, with signer support in Ring, Bitkit and Passport. The SDK side is in draft ([pubky-homeserver#668](https://github.com/pubky/pubky-homeserver/pull/668), andrei-21). It gates D1's primary recovery path; until a signer supports it, its users get the recovery-code fallback | Pubky core (andrei-21), Ring, Bitkit, Passport | 3 |
 | H7 | Create-only conditional PUT (`If-None-Match: *`) | Pubky core | 1 |
 | H3 | Grant status for verifiers | Pubky core | 1 |
 | SSO | H5, H6, R0, H1 per the SSO plan. Delegated grants (H1) are still core's open item; the scoped-key work doesn't design them | Pubky core, Ring | per SSO |
@@ -428,7 +428,7 @@ archive key (symmetric, per user, random; shared through the self group; wrapped
 | Decision | Owner | Phase |
 |---|---|---|
 | Paykit keeps Encrypted Links for payments. Chat references `paykit.payment_*` kinds and never carries payment settlement itself | Paykit | 1 |
-| No Paykit work for chat or browser payments: the storage interface (Y1), the WASM package (Y2) and a custom-message API are withdrawn. Payments need nothing in the browser beyond a public read, and chat runs on MLS (Ben, 2 Oct) | Paykit | — |
+| No Paykit work for chat or browser payments: the storage interface (Y1), the WASM package (Y2) and a custom-message API are withdrawn. Payments need nothing in the browser beyond a public read, and chat runs on MLS (ben-kaufman, 2 Oct) | Paykit | — |
 | Public rooms v1 standardizes Rooms' layout, and pubky.app renders rooms from it | Matt, us | 1 |
 | Member-list discovery for rooms uses the L3 index | Matt | 2 |
 | Membership changes wait for the committer; handover and re-creation bound the stall | us | 1 |
