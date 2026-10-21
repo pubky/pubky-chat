@@ -23,7 +23,7 @@ Rules for the index:
 - Anyone can run one, and clients can use several.
 - Clients check every answer against the homeservers.
 
-## Answers to Severin's audit
+## Answers to SeverinAlexB's audit
 
 - Each of the 12 root causes maps to the part of the design or the phase that removes it. The table is in the plan.
 - We adopted his four programs, his message lifecycle (accepted, queued, transmitted, acknowledged) and his product definitions.
